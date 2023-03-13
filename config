@@ -2,9 +2,3 @@
 	repositoryformatversion = 0
 	filemode = true
 	bare = true
-[remote "automation"]
-	url = 192.168.0.27:/home/isaac/isaacrepo
-	fetch = +refs/heads/*:refs/remotes/automation/*
-[branch "master"]
-	remote = automation
-	merge = refs/heads/master
