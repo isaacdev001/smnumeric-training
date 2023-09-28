@@ -1,0 +1,14 @@
+- name: Add new linux user
+  hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+   - name: Create user
+     ansible.builtin.user:
+       name: autoservice2
+       password: "{{ 'test123' | password_hash('sha512') }}" 
+       state: present
+       comment: service account
+       group: splunk
+       shell: /bin/bash
