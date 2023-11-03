@@ -1,0 +1,61 @@
+ - hosts: all
+   vars_prompt:
+   remote_user: root
+    
+ - name: username
+   prompt: "What is your username?"
+   private: no
+
+ - name: password
+   prompt: "What is your password?"
+   private: no
+
+ - name: user_as_admin
+   prompt: "users as sudo type yes/no"
+   private: no
+   default: "yes"
+
+ - name: expire_set
+   prompt: "how many days the expire need to be set"
+   private: no
+   default: "30"
+   
+   tasks:
+    - name: useradd adding without sudo privileges.
+      user:
+          name: "{{ username }}"
+          password: "{{ password | password_hash('sha512')}}"
+          state: present
+      when:  ( password != '') and (user_as_admin == "no")
+      register: find_output
+
+
+    - name: useradd adding with sudo privileges.
+      user:
+          name: "{{ username }}"
+          password: "{{ password | password_hash('sha512')}}"
+          state: present
+          shell: /bin/bash
+          groups: << your sudoer group name >>    
+          append: yes
+      when:  ( password != '') and (user_as_admin == "yes")
+      register: find_output1
+
+    - name:   set expire
+      shell: chage -E $(( $(date +%s)/3600/24 + {{ expire_set }} )) {{ username }}
+      when: ( find_output1.name == "{{ username }}" )
+      ignore_errors: yes
+
+    - name:   set expire for admin user
+      shell: chage -E $(( $(date +%s)/3600/24 + {{ expire_set }} )) {{ username }}
+      when: find_output.name == "{{ username }}"
+      ignore_errors: yes
+     
+    - name: send a message to chat in playbook
+      telegram:
+         token: '857XXXXX0:AXXXXXXXXXXXXXXXXXXXXX4'
+         chat_id: 7XXXXXX1
+         msg: "Credentials: \n 
+                  Username : {{ username }} \n 
+                  Password: {{ password }}  \n
+                 your access will be expired in {{ expire_set }} days"

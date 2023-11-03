@@ -1,0 +1,15 @@
+- hosts: all
+  become: true
+  vars_files:
+      - /etc/ansible/vars.yml
+  tasks:
+      - name: more complex items to add several users
+        user:
+         name: "{{ item.name }}"
+         uid: "{{ item.uid }}"
+         groups: "{{ item.groups }}"
+         password: "{{ item.password }}"
+         comment: "{{ item.comment }}"
+         shell: "{{ item.shell }}"
+         state: present
+        with_items: "{{ user_details }}"
