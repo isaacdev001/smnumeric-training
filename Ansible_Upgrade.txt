@@ -1,0 +1,22 @@
+
+*************Upgrading Ansible on Ubuntu to ansible 2.9.27**************
+
+remove the default version
+1. a sudo apt remove ansible
+   b sudo apt --purge autoremove
+
+Update Ubuntu repo and apply all pending patches:
+2. a sudo apt update
+   b sudo apt upgrade
+
+Install software-properties-common package on Ubuntu to enable PPA support, run:
+3. a sudo apt -y install software-properties-common
+   b sudo apt-add-repository ppa:ansible/ansible
+
+Install the latest version of Ansible on Ubuntu Linux using the apt
+4. sudo apt install ansible
+
+5. Run the command "ansible --version" to see the below up to date version
+  ansible 2.9.27
+
+
